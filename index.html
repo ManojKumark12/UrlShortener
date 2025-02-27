@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./src/output.css" rel="stylesheet">
+</head>
+<body>
+    <div class="h-screen w-screen flex justify-center bg-cyan-100">
+        <form id="form" class="flex flex-col  mt-[3%] items-center  h-[80%] w-[40%] border-1 bg-white border-transparent">
+            <div class="flex flex-col justify-evenly items-center h-[20%]">
+                <h1 class="text-4xl font-bold">Url Shortener</h1>
+            </div>
+            <div class="text-lg font-medium w-[80%] h-[30%] flex  flex-col ">
+                <p>Enter Url:</p>
+                <input type="url" placeholder="Enter url" name="url"class="p-[2%] border-1  border-gray-300 focus:outline-none" />
+               
+                    <p>Enter short url</p>
+                <input type="text" placeholder="Enter url" name="shorturl" class="p-[2%] border-1  border-gray-300 focus:outline-none" />
+               
+            </div>
+            <div class="h-[50%] w-[100%] flex flex-col items-center">
+            <button type="submit" class="cursor-pointer text-lg bg-blue-300 p-[2%]  rounded-md ">Shorten</button>
+            <p class="text-2xl">Shortened Urls</p>
+            <ul class="shorturls p-[3%] w-[80%] border-1  border-transparent bg-gray-100">
+                <li>Hi lorem32</li>
+                <li>Hi lorem32</li>
+                </ul>       
+            </div>
+        </form>
+    </div>
+    <script>
+       document.getElementById("form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const formdata = new FormData(event.target);//////////////////////////////////submit button then how retreving form data 
+    const url = formdata.get("url");
+    const shortCode = formdata.get("shorturl"); // Fix variable name
+
+    try {
+        const response = await fetch("/shorten", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url, shortCode })
+        });
+
+        if (response.ok) {
+            alert("Form submitted successfully!");
+            event.target.reset();
+        } else {
+            const errorMessage = await response.text(); // Fix variable name
+            alert(errorMessage);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+    </script>
+</body>
+</html>
