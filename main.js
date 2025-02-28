@@ -48,6 +48,17 @@ const server = createServer(async (req, res) => {
         let contentType = "text/html";
 
         const extension = extname(filePath);
+        if(!extension){
+            const links=await loadLinks();
+            if(links[filePath]){
+                res.writeHead(302,{location:links[filePath]});
+                return res.end();
+            }
+            else{
+                res.writeHead(400, { "Content-Type": "application/json" });
+                return res.end(JSON.stringify({ error: "Not Found" }));
+            }
+        }
         switch (extension) {
             case ".css":
                 contentType = "text/css";
@@ -67,6 +78,13 @@ const server = createServer(async (req, res) => {
                 break;
             default:
                 contentType = "text/html";
+        }
+        if(req.url==='/links'){
+            const links=await loadLinks();
+            // console.log(links);
+            res.writeHead(200, { "Content-Type": "application/json" });
+            // console.log("ha");
+            return res.end(JSON.stringify(links));
         }
 
         showData(filePath, contentType, res);////////////////////////////////////////////////////
@@ -103,6 +121,7 @@ const server = createServer(async (req, res) => {
             res.end(JSON.stringify({ success: true, shortcode: finalShortCode }));
         });
     }
+    
 });
 
 // Start server

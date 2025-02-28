@@ -23,20 +23,37 @@
             <div class="h-[50%] w-[100%] flex flex-col items-center">
             <button type="submit" class="cursor-pointer text-lg bg-blue-300 p-[2%]  rounded-md ">Shorten</button>
             <p class="text-2xl">Shortened Urls</p>
-            <ul class="shorturls p-[3%] w-[80%] border-1  border-transparent bg-gray-100">
-                <li>Hi lorem32</li>
-                <li>Hi lorem32</li>
-                </ul>       
+            <ul class="shorturls p-[3%] w-[80%] text-blue-700">
+                <!-- <li>Hi lorem32</li>
+                <li>Hi lorem32</li> -->
+                </ul>     
+                <ul class="temp p-[1%] w-[90%]" >
+
+                </ul>  
             </div>
         </form>
     </div>
     <script>
+      
        document.getElementById("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const formdata = new FormData(event.target);//////////////////////////////////submit button then how retreving form data 
     const url = formdata.get("url");
     const shortCode = formdata.get("shorturl"); // Fix variable name
-
+    const fetchShortenedUrl=async ()=>{
+            // console.log("llllllll");
+            const res=await fetch("/links");
+            const links=await res.json();
+            const link=links[shortCode];
+            const ul=document.querySelector(".shorturls");
+            const ul2=document.querySelector(".temp");
+            const li=document.createElement("li");
+            const li2=document.createElement("li");
+            li2.innerHTML=`Original:${url}`;
+            li.innerHTML=`<a href="/${shortCode}" target="_blank">ShortUrl:${window.location.origin}/${shortCode}</a>`;
+            ul.append(li);
+            ul2.append(li2);
+        }
     try {
         const response = await fetch("/shorten", {
             method: "POST",
@@ -45,6 +62,7 @@
         });
 
         if (response.ok) {
+            fetchShortenedUrl();
             alert("Form submitted successfully!");
             event.target.reset();
         } else {
