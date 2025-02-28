@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="h-screen w-screen flex justify-center bg-cyan-100">
-        <form id="form" class="flex flex-col  mt-[3%] items-center  h-[80%] w-[40%] border-1 bg-white border-transparent">
+        <form id="form" class="flex flex-col  mt-[3%] items-center  h-[100%] w-[40%] border-1 bg-white border-transparent">
             <div class="flex flex-col justify-evenly items-center h-[20%]">
                 <h1 class="text-4xl font-bold">Url Shortener</h1>
             </div>
@@ -34,26 +34,25 @@
         </form>
     </div>
     <script>
-      
+        const fetchShortenedUrl=async ()=>{
+         
+         const res=await fetch("/links");
+         const links=await res.json();
+         console.log(links);
+         const ul=document.querySelector(".shorturls");
+         for(const [shortCode,url] of Object.entries(links)){
+             const truncatedUrl=(url.length>25)?url.substring(0,20)+".....":url;
+             const li=document.createElement('li');
+             li.innerHTML=`<a href="/${shortCode}" target="_blank">${window.location.origin}/${shortCode}</a>-><span color="black">${truncatedUrl}<span>`;
+             ul.appendChild(li);
+         }
+     }
        document.getElementById("form").addEventListener("submit", async (event) => {
     event.preventDefault();
     const formdata = new FormData(event.target);//////////////////////////////////submit button then how retreving form data 
     const url = formdata.get("url");
     const shortCode = formdata.get("shorturl"); // Fix variable name
-    const fetchShortenedUrl=async ()=>{
-            // console.log("llllllll");
-            const res=await fetch("/links");
-            const links=await res.json();
-            const link=links[shortCode];
-            const ul=document.querySelector(".shorturls");
-            const ul2=document.querySelector(".temp");
-            const li=document.createElement("li");
-            const li2=document.createElement("li");
-            li2.innerHTML=`Original:${url}`;
-            li.innerHTML=`<a href="/${shortCode}" target="_blank">ShortUrl:${window.location.origin}/${shortCode}</a>`;
-            ul.append(li);
-            ul2.append(li2);
-        }
+  
     try {
         const response = await fetch("/shorten", {
             method: "POST",

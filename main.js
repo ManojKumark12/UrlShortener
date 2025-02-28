@@ -46,8 +46,16 @@ const server = createServer(async (req, res) => {
     if (req.method === "GET") {////////////////////////////////////////////////////////////////////////////
         let filePath = req.url === "/" ? "index.html" : req.url.substring(1);
         let contentType = "text/html";
-
+// console.log(filePath);
         const extension = extname(filePath);
+        if(req.url==='/links'){
+            const links=await loadLinks();
+            // console.log(links);
+            res.writeHead(200, { "Content-Type": "application/json" });
+            // console.log("ha");
+            return res.end(JSON.stringify(links));
+        }
+        // console.log(extension);
         if(!extension){
             const links=await loadLinks();
             if(links[filePath]){
@@ -79,13 +87,7 @@ const server = createServer(async (req, res) => {
             default:
                 contentType = "text/html";
         }
-        if(req.url==='/links'){
-            const links=await loadLinks();
-            // console.log(links);
-            res.writeHead(200, { "Content-Type": "application/json" });
-            // console.log("ha");
-            return res.end(JSON.stringify(links));
-        }
+      
 
         showData(filePath, contentType, res);////////////////////////////////////////////////////
         return;
